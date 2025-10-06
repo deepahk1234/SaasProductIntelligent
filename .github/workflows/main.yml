@@ -1,0 +1,38 @@
+name: Deploy SaaS Intelligence Agent
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run application check
+        run: |
+          echo "Starting Flask app in the background..."
+          python agent/main.py &
+          sleep 5 # Give the server a moment to start
+
+          echo "Checking if the process is running..."
+          pgrep -f "python agent/main.py" || (echo "Flask app failed to start" && exit 1)
+
+          echo "Checking if the API endpoint is responding..."
+          curl --fail -X POST http://127.0.0.1:5001/api/research || (echo "API endpoint not responding" && exit 1)
+
+          echo "Deployment check successful!"
