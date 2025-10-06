@@ -1,4 +1,4 @@
-name: Deploy SaaS Intelligence Agent
+name: CI/CD for SaaS Intelligence Agent
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -35,4 +35,23 @@ jobs:
           echo "Checking if the API endpoint is responding..."
           curl --fail -X POST http://127.0.0.1:5001/api/research || (echo "API endpoint not responding" && exit 1)
 
-          echo "Deployment check successful!"
+          echo "Test check successful!"
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.13.15
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+        env:
+          # This is required to point to the subdirectory containing the app
+          HD_APP_BASE: "."
+          # This tells Heroku to deploy the root directory, not a subdirectory
+          HD_PROCFILE: "Procfile"
