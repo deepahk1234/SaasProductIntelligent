@@ -44,6 +44,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Install Heroku CLI
+        run: sudo snap install heroku --classic
+
       - name: Deploy to Heroku
         uses: akhileshns/heroku-deploy@v3.13.15
         with:
