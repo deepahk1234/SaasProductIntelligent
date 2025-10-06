@@ -44,6 +44,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Verify secrets are present
+        run: |
+          if [ -z "${{ secrets.HEROKU_API_KEY }}" ]; then
+            echo "HEROKU_API_KEY secret not set. Please set it in your repository settings."
+            exit 1
+          fi
+          if [ -z "${{ secrets.HEROKU_APP_NAME }}" ]; then
+            echo "HEROKU_APP_NAME secret not set. Please set it in your repository settings."
+            exit 1
+          fi
+          if [ -z "${{ secrets.HEROKU_EMAIL }}" ]; then
+            echo "HEROKU_EMAIL secret not set. Please set it in your repository settings."
+            exit 1
+          fi
+
       - name: Install Heroku CLI
         run: curl https://cli-assets.heroku.com/install.sh | sh
 
@@ -53,6 +68,7 @@ jobs:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          dontautocreate: true
         env:
           # This is required to point to the subdirectory containing the app
           HD_APP_BASE: "."
