@@ -79,3 +79,6 @@ Click the "Start Research" button to see the application in action.
 The GitHub Actions workflow included in this repository is for **Continuous Integration (CI)** purposes. It automatically verifies that the application can be installed and runs without errors after each code change.
 
 This workflow **does not deploy the application to a live, public URL**. To test and use the application, please follow the "How to Run Locally" instructions above.
+
+---
+*This README was last updated on October 7, 2025.*
