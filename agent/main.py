@@ -15,5 +15,9 @@ def research():
     report = run_research(prompt="Find profitable SaaS products")
     return jsonify(report)
 
+@app.route('/')
+def home():
+    return "Flask app is running!"
+
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
